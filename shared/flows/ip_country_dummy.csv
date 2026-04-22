@@ -1,0 +1,6 @@
+ip_start,ip_end,location
+10.0.0.0,10.0.0.255,Internal Network
+192.168.0.0,192.168.255.255,Private LAN
+8.8.8.0,8.8.8.255,United States
+1.1.1.0,1.1.1.255,Australia
+203.0.113.0,203.0.113.255,Test-Net
