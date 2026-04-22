@@ -1,0 +1,162 @@
+#version: '3.8'
+
+services:
+  cassowary: #This container is malicious
+    image: kalilinux/kali-rolling
+    container_name: cassowary
+    hostname: cassowary
+    networks:
+      island:
+        ipv4_address: 10.0.0.10
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    tty: true
+    stdin_open: true
+    volumes:
+      - ../shared:/shared
+
+  dodo: #This container is harmless
+    image: ubuntu:22.04
+    container_name: dodo
+    hostname: dodo
+    networks:
+      island:
+        ipv4_address: 10.0.0.101
+    tty: true
+    stdin_open: true
+    volumes:
+      - ../shared:/shared
+
+  takahe: #This container is harmless
+    image: ubuntu:22.04
+    container_name: takahe
+    hostname: takahe
+    networks:
+      island:
+        ipv4_address: 10.0.0.102
+    tty: true
+    stdin_open: true
+    volumes:
+      - ../shared:/shared
+
+  kiwi: #This container is harmless
+    image: ubuntu:22.04
+    container_name: kiwi
+    hostname: kiwi
+    networks:
+      island:
+        ipv4_address: 10.0.0.103
+    tty: true
+    stdin_open: true
+    volumes:
+      - ../shared:/shared
+
+
+  moa: #This container is observing
+    image: ubuntu:22.04
+    container_name: moa
+    hostname: moa
+    network_mode: host #host mode for packet inspection
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    privileged: true
+    volumes:
+      - ../flows:/flows
+      - ../logs:/logs
+      - ../model:/model
+      - ../shared:/shared
+      - ../scripts:/scripts
+    environment:
+      - FM_INTERFACE=br-island
+    tty: true
+    stdin_open: true
+
+  cicflowmeter:
+    build:
+      context: .
+      dockerfile: cicflowmeter/Dockerfile
+    platform: linux/amd64
+    container_name: cicflowmeter
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    privileged: true
+    environment:
+      - CIC_IFACE=br-island
+      - CIC_OUT=/flows/live_flow_features.csv
+    volumes:
+      - ../flows:/flows
+    restart: unless-stopped
+
+  rabbitmq:
+    hostname: iris_rabbitmq
+    container_name: iris_rabbitmq
+    extends:
+      file: ./iris-web/docker-compose.base.yml
+      service: rabbitmq
+
+  db:
+    hostname: iris_db
+    container_name: iris_db
+    extends:
+      file: ./iris-web/docker-compose.base.yml
+      service: db
+    image: ${DB_IMAGE_NAME:-ghcr.io/dfir-iris/iriswebapp_db}:${DB_IMAGE_TAG:-v2.4.24}
+
+  app:
+    hostname: iris_app
+    container_name: iris_app
+    extends:
+      file: ./iris-web/docker-compose.base.yml
+      service: app
+    image: ${APP_IMAGE_NAME:-ghcr.io/dfir-iris/iriswebapp_app}:${APP_IMAGE_TAG:-v2.4.24}
+    networks:
+      iris_backend:
+      iris_frontend:
+      island:
+        ipv4_address: 10.0.0.7
+
+  worker:
+    hostname: iris_worker
+    container_name: iris_worker
+    extends:
+      file: ./iris-web/docker-compose.base.yml
+      service: worker
+    image: ${APP_IMAGE_NAME:-ghcr.io/dfir-iris/iriswebapp_app}:${APP_IMAGE_TAG:-v2.4.24}
+
+  nginx:
+    hostname: iris
+    container_name: iris
+    extends:
+      file: ./iris-web/docker-compose.base.yml
+      service: nginx
+    image: ${NGINX_IMAGE_NAME:-ghcr.io/dfir-iris/iriswebapp_nginx}:${NGINX_IMAGE_TAG:-v2.4.24}
+    networks:
+      iris_backend:
+      iris_frontend:
+      island:
+        ipv4_address: 10.0.0.6
+
+volumes:
+  iris-downloads:
+  user_templates:
+  server_data:
+  db_data:
+
+networks:
+  iris_backend:
+    name: iris_backend
+  iris_frontend:
+    name: iris_frontend
+  island:
+    name: island
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-island #fixed host bridge name
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+          gateway: 10.0.0.1
