@@ -1,5 +1,5 @@
 # Anomaly_IDS
-
+anomaly_IDS is a cybersecurity lab project for detecting port-scan attacks with anomaly-based ML, running the detection in a small Docker-based network, and comparing/enriching alerts against Suricata by pushing them into DFIR-IRIS for incident handling.
 
 ## Start
 
