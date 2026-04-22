@@ -1,26 +1,5 @@
-# PJ Intelligent Cybersecurity Applications
+# Anomaly_IDS
 
-## Project Task
-
-**Project Task 1: Operational usefulness of alerts from anomaly-based intrusion detection systems**
-
-In the lecture 'AI & Cybersecurity,' an anomaly-based intrusion detection system was developed. Such systems are nice since they have the potential to detect new/unknown attacks. One drawback is the usefulness of alarms for operational purposes.
-
-For this project topic, you will focus on this operational aspect. For this, you should perform the following tasks:
-
-- You can pick any intrusion detection data set that contains a port scanning attack and records data in a format you can later generate.
-- Develop an anomaly detection approach that can detect port scans. Do not bother with reducing false positive rates or increasing true positives. As long as your approach produces alerts, everything is fine.
-- Create a small environment with a few virtual machines (how many depends on what your laptops are capable of handling). In this environment, perform the following tasks:
-  - Conduct a port scan against virtual machines.
-  - Use your anomaly detection approach to detect them.
-  - In addition, install Suricata (https://suricata.io/) and use this network intrusion detection system to detect port scans.
-  - Use detection results from your anomaly detection to create alerts in the EVE JSON intrusion detection alert format (https://docs.suricata.io/en/latest/output/eve/eve-json-format.html).
-  - Find approaches to enrich your alert with meaningful additional information.
-- Install DFIR-IRIS ([DFIR-IRIS | Open Source Incident Response Platform](https://dfir-iris.org/)), and use the API to create a case for an alert, and investigate if DFIR IRIS provides additional options for adding information to alerts that could not be added to EVE JSON alerts.
-- For the report, include the following:
-  - A task/problem description in your own words and from your understanding, including additional assumptions, and approach ideas.
-  - Describe the experimental setup and how you approached solving the tasks.
-  - Discuss the quality of alerts/cases from the perspective of a security officer/system operator. Which type of alerts is most useful to them? Also, compare this to regular alerts from Suricata.
 
 ## Start
 
