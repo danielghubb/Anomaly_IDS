@@ -1,0 +1,8 @@
+matplotlib==3.10.7
+numpy==1.26.4
+pandas==2.3.3
+scapy==2.6.1
+dfir-iris-client==2.0.4
+urllib3==2.6.0
+pyshark==0.6
+scikit-learn==1.7.2
