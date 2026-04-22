@@ -30,7 +30,7 @@ Set up environment by
 │   ├── setup.sh
 │   └── teardown.sh
 ├── model/              # Anomaly Detector
-├── data/              # Data Manipulation and Model Testing
+├── data/               # Data Manipulation and Model Testing
 ├── logs/
 ├── shared/
 ├── src/
